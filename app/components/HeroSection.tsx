@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "./Button";
 import { HeroVideo } from "./HeroVideo";
+import { EditReelButton } from "./EditReelButton";
 import type { SanitySiteSettings } from "@/lib/sanity/types";
 import { urlForImage } from "@/lib/sanity/image";
 
@@ -23,7 +24,6 @@ export function HeroSection({ settings }: HeroSectionProps) {
 
   return (
     <section className="relative flex min-h-[85vh] items-end overflow-hidden bg-foreground pb-20 pt-[94px]">
-      {/* Background: static poster sits underneath; video (MP4 or YouTube) fades in over it */}
       <div className="absolute inset-0">
         <Image
           src={fallbackImageUrl}
@@ -43,13 +43,13 @@ export function HeroSection({ settings }: HeroSectionProps) {
           style={{ fontFamily: "var(--font-display)" }}
         >
           <span className="block animate-fade-up animate-delay-100">
-            I help people
+            I edit and shape
           </span>
           <span className="block animate-fade-up animate-delay-200">
-            and brands tell
+            meaningful stories
           </span>
           <span className="block animate-fade-up animate-delay-300">
-            meaningful stories through film
+            that connect.
           </span>
         </h1>
 
@@ -61,34 +61,9 @@ export function HeroSection({ settings }: HeroSectionProps) {
           >
             Get In Touch
           </Button>
-          <a
-            href={editReelUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-bold uppercase tracking-[0.35px] text-white transition-colors hover:opacity-80"
-            style={{ fontFamily: "var(--font-display-sans)" }}
-          >
-            View Edit Reel
-            <PlayCircleIcon className="h-6 w-6" />
-          </a>
+          <EditReelButton reelUrl={editReelUrl} />
         </div>
       </div>
     </section>
-  );
-}
-
-function PlayCircleIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      aria-hidden
-    >
-      <circle cx="12" cy="12" r="10" />
-      <polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none" />
-    </svg>
   );
 }

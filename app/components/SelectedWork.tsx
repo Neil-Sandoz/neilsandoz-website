@@ -12,7 +12,7 @@ export function SelectedWork({ projects }: SelectedWorkProps) {
   const hasSanityData = projects.length > 0;
 
   return (
-    <ScrollReveal className="px-6 pb-24 pt-16 md:px-[50px]">
+    <ScrollReveal id="selected-work" className="px-6 pb-24 pt-16 md:px-[50px] scroll-mt-24">
       <div className="mb-12 reveal">
         <h2
           className="text-[48px] leading-tight tracking-[-0.64px]"

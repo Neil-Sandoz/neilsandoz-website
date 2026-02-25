@@ -6,9 +6,10 @@ interface ScrollRevealProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  id?: string;
 }
 
-export function ScrollReveal({ children, className = "", delay = 0 }: ScrollRevealProps) {
+export function ScrollReveal({ children, className = "", delay = 0, id }: ScrollRevealProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export function ScrollReveal({ children, className = "", delay = 0 }: ScrollReve
   }, [delay]);
 
   return (
-    <div ref={wrapperRef} className={className}>
+    <div ref={wrapperRef} id={id} className={className}>
       {children}
     </div>
   );

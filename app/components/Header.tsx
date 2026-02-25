@@ -1,20 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ExternalLinkIcon } from "./icons";
-
-const RESUME_URL = "/Neil Sandoz_Editor_Resume_2026.pdf";
 
 const NAV_LINKS = [
-  { label: "Work", href: "/" },
-  { label: "Resumé", href: RESUME_URL, external: true },
+  { label: "Work", href: "/#selected-work" },
   { label: "About", href: "/about" },
 ];
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -32,6 +29,16 @@ export function Header() {
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled && !mobileOpen;
 
+  function handleWorkClick(e: React.MouseEvent) {
+    if (isHome) {
+      e.preventDefault();
+      document.getElementById("selected-work")?.scrollIntoView({ behavior: "smooth" });
+      setMobileOpen(false);
+    } else {
+      router.push("/#selected-work");
+    }
+  }
+
   return (
     <header
       className={`fixed left-0 right-0 top-0 z-50 border-b transition-all duration-300 ${
@@ -45,9 +52,9 @@ export function Header() {
           <img
             src="/NS.gif"
             alt="NS"
-            width={38}
-            height={27}
-            className={`h-[27px] w-auto ${transparent ? "brightness-100" : "brightness-0"}`}
+            width={48}
+            height={34}
+            className={`h-[34px] w-auto ${transparent ? "brightness-100" : "brightness-0"}`}
             style={{ transition: "filter 0.3s" }}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src = "/ns-monogram.svg";
@@ -64,16 +71,16 @@ export function Header() {
         {/* Desktop nav */}
         <nav className="hidden items-center gap-10 md:flex">
           {NAV_LINKS.map((link) =>
-            link.external ? (
+            link.label === "Work" ? (
               <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xl tracking-[-0.4px] transition-colors hover:opacity-80"
+                key="Work"
+                href="/#selected-work"
+                onClick={handleWorkClick}
+                className={`text-xl tracking-[-0.4px] transition-colors hover:opacity-80 ${
+                  isHome ? "underline underline-offset-4" : ""
+                }`}
               >
-                {link.label}
-                <ExternalLinkIcon className="h-3.5 w-3.5" />
+                Work
               </a>
             ) : (
               <Link
@@ -117,34 +124,27 @@ export function Header() {
       {/* Mobile menu */}
       <div
         className={`overflow-hidden border-t transition-all duration-300 md:hidden ${
-          mobileOpen ? "max-h-64 border-border/20" : "max-h-0 border-transparent"
+          mobileOpen ? "max-h-48 border-border/20" : "max-h-0 border-transparent"
         } ${transparent ? "bg-black/80" : "bg-background"}`}
       >
         <nav className="flex flex-col gap-4 px-6 py-6">
-          {NAV_LINKS.map((link) =>
-            link.external ? (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xl tracking-[-0.4px] transition-colors hover:opacity-80"
-              >
-                {link.label}
-                <ExternalLinkIcon className="h-3.5 w-3.5" />
-              </a>
-            ) : (
-              <Link
-                key={link.label}
-                href={link.href}
-                className={`text-xl tracking-[-0.4px] transition-colors hover:opacity-80 ${
-                  pathname === link.href ? "underline underline-offset-4" : ""
-                }`}
-              >
-                {link.label}
-              </Link>
-            )
-          )}
+          <a
+            href="/#selected-work"
+            onClick={handleWorkClick}
+            className={`text-xl tracking-[-0.4px] transition-colors hover:opacity-80 ${
+              isHome ? "underline underline-offset-4" : ""
+            }`}
+          >
+            Work
+          </a>
+          <Link
+            href="/about"
+            className={`text-xl tracking-[-0.4px] transition-colors hover:opacity-80 ${
+              pathname === "/about" ? "underline underline-offset-4" : ""
+            }`}
+          >
+            About
+          </Link>
         </nav>
       </div>
     </header>
