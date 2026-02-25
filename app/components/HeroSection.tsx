@@ -6,6 +6,7 @@ import { urlForImage } from "@/lib/sanity/image";
 
 const FALLBACK_EDIT_REEL = "https://youtu.be/rRqMH-W_4YY";
 const FALLBACK_HERO_VIDEO = "https://youtu.be/LDzrmm2YoGg";
+const FALLBACK_HERO_IMAGE = "/BTS_Agu-sweat.jpg";
 
 interface HeroSectionProps {
   settings: SanitySiteSettings | null;
@@ -15,8 +16,8 @@ export function HeroSection({ settings }: HeroSectionProps) {
   const editReelUrl = settings?.editReelUrl || FALLBACK_EDIT_REEL;
   const fallbackImageUrl =
     settings?.heroFallbackImage
-      ? urlForImage(settings.heroFallbackImage)?.width(1600).url() ?? "/ns-profile-photo.png"
-      : "/ns-profile-photo.png";
+      ? urlForImage(settings.heroFallbackImage)?.width(1600).url() ?? FALLBACK_HERO_IMAGE
+      : FALLBACK_HERO_IMAGE;
 
   const heroVideoUrl = settings?.heroVideoUrl ?? FALLBACK_HERO_VIDEO;
 
