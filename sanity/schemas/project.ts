@@ -1,5 +1,37 @@
 import { defineField, defineType } from "sanity";
 
+const richTextBlock = {
+  type: "block",
+  styles: [
+    { title: "Normal", value: "normal" },
+    { title: "H3", value: "h3" },
+    { title: "H4", value: "h4" },
+    { title: "Quote", value: "blockquote" },
+  ],
+  marks: {
+    decorators: [
+      { title: "Bold", value: "strong" },
+      { title: "Italic", value: "em" },
+    ],
+    annotations: [
+      {
+        name: "link",
+        type: "object",
+        title: "Link",
+        fields: [
+          {
+            name: "href",
+            type: "url",
+            title: "URL",
+            validation: (rule: any) =>
+              rule.uri({ allowRelative: true, scheme: ["http", "https", "mailto"] }),
+          },
+        ],
+      },
+    ],
+  },
+};
+
 export default defineType({
   name: "project",
   title: "Project",
@@ -56,8 +88,7 @@ export default defineType({
           name: "alt",
           title: "Alt Text",
           type: "string",
-          description: "Describe this image for accessibility and SEO",
-          validation: (rule) => rule.required(),
+          description: "Optional — falls back to the project title",
         }),
       ],
     }),
@@ -65,14 +96,14 @@ export default defineType({
       name: "heroImage",
       title: "Hero Image",
       type: "image",
-      description: "Large image at top of the case study page",
+      description: "Large banner at top of the case study page",
       options: { hotspot: true },
       fields: [
         defineField({
           name: "alt",
           title: "Alt Text",
           type: "string",
-          validation: (rule) => rule.required(),
+          description: "Optional — falls back to the project title",
         }),
       ],
     }),
@@ -84,152 +115,174 @@ export default defineType({
       validation: (rule) => rule.max(200),
       rows: 3,
     }),
+
+    // ── Reorderable page sections ─────────────────────────────────────────
     defineField({
-      name: "body",
-      title: "Full Description",
+      name: "sections",
+      title: "Page Content",
+      description: "Drag to reorder. Add text, videos, links, or image galleries in any order.",
       type: "array",
-      description: "The full case study write-up (supports rich text)",
-      of: [
-        {
-          type: "block",
-          styles: [
-            { title: "Normal", value: "normal" },
-            { title: "H3", value: "h3" },
-            { title: "H4", value: "h4" },
-            { title: "Quote", value: "blockquote" },
-          ],
-          marks: {
-            decorators: [
-              { title: "Bold", value: "strong" },
-              { title: "Italic", value: "em" },
-            ],
-            annotations: [
-              {
-                name: "link",
-                type: "object",
-                title: "Link",
-                fields: [
-                  {
-                    name: "href",
-                    type: "url",
-                    title: "URL",
-                    validation: (rule) =>
-                      rule.uri({ allowRelative: true, scheme: ["http", "https", "mailto"] }),
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      ],
-    }),
-    defineField({
-      name: "videoLinks",
-      title: "Video Links",
-      type: "array",
-      description: "Links to video content (YouTube, Vimeo, etc.)",
       of: [
         {
           type: "object",
-          name: "videoLink",
+          name: "textSection",
+          title: "Text Block",
+          icon: () => "📝",
           fields: [
             defineField({
-              name: "label",
-              title: "Label",
+              name: "heading",
+              title: "Heading (optional)",
               type: "string",
-              validation: (rule) => rule.required(),
             }),
             defineField({
-              name: "url",
-              title: "URL",
-              type: "url",
+              name: "content",
+              title: "Content",
+              type: "array",
+              of: [richTextBlock],
               validation: (rule) => rule.required(),
             }),
           ],
           preview: {
-            select: { title: "label", subtitle: "url" },
-          },
-        },
-      ],
-    }),
-    defineField({
-      name: "pressLinks",
-      title: "Press Links",
-      type: "array",
-      description: "Links to press coverage or articles",
-      of: [
-        {
-          type: "object",
-          name: "pressLink",
-          fields: [
-            defineField({
-              name: "label",
-              title: "Label",
-              type: "string",
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "url",
-              title: "URL",
-              type: "url",
-              validation: (rule) => rule.required(),
-            }),
-          ],
-          preview: {
-            select: { title: "label", subtitle: "url" },
-          },
-        },
-      ],
-    }),
-    defineField({
-      name: "mediaGallery",
-      title: "Media Gallery",
-      type: "array",
-      description: "BTS photos, stills, and additional video clips",
-      of: [
-        {
-          type: "image",
-          name: "galleryImage",
-          title: "Image",
-          options: { hotspot: true },
-          fields: [
-            defineField({
-              name: "alt",
-              title: "Alt Text",
-              type: "string",
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "caption",
-              title: "Caption",
-              type: "string",
-            }),
-          ],
-        },
-        {
-          type: "object",
-          name: "galleryVideo",
-          title: "Video",
-          fields: [
-            defineField({
-              name: "url",
-              title: "Video URL",
-              type: "url",
-              validation: (rule) => rule.required(),
-            }),
-            defineField({
-              name: "caption",
-              title: "Caption",
-              type: "string",
-            }),
-          ],
-          preview: {
-            select: { title: "caption", subtitle: "url" },
-            prepare({ title, subtitle }) {
+            select: { title: "heading", content: "content" },
+            prepare({ title, content }) {
+              const plainText =
+                content
+                  ?.map((b: any) =>
+                    b.children?.map((c: any) => c.text).join("")
+                  )
+                  .join(" ")
+                  .slice(0, 80) ?? "";
               return {
-                title: title || "Video",
-                subtitle,
-                media: undefined,
+                title: title || "Text Block",
+                subtitle: plainText ? `${plainText}…` : "",
+              };
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "videoEmbed",
+          title: "Video",
+          icon: () => "🎬",
+          fields: [
+            defineField({
+              name: "label",
+              title: "Label",
+              type: "string",
+              description: 'e.g. "Trailer", "Full Film", "Episode 1"',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "url",
+              title: "URL",
+              type: "url",
+              description: "YouTube or Vimeo link",
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "label", subtitle: "url" },
+          },
+        },
+        {
+          type: "object",
+          name: "linkList",
+          title: "Links",
+          icon: () => "🔗",
+          fields: [
+            defineField({
+              name: "heading",
+              title: "Heading (optional)",
+              type: "string",
+              description: 'e.g. "Press", "Awards"',
+            }),
+            defineField({
+              name: "links",
+              title: "Links",
+              type: "array",
+              of: [
+                {
+                  type: "object",
+                  name: "linkItem",
+                  fields: [
+                    defineField({
+                      name: "label",
+                      title: "Label",
+                      type: "string",
+                      validation: (rule) => rule.required(),
+                    }),
+                    defineField({
+                      name: "url",
+                      title: "URL",
+                      type: "url",
+                      validation: (rule) => rule.required(),
+                    }),
+                  ],
+                  preview: {
+                    select: { title: "label", subtitle: "url" },
+                  },
+                },
+              ],
+              validation: (rule) => rule.required().min(1),
+            }),
+          ],
+          preview: {
+            select: { heading: "heading", links: "links" },
+            prepare({ heading, links }) {
+              const count = links?.length ?? 0;
+              return {
+                title: heading || "Links",
+                subtitle: `${count} link${count === 1 ? "" : "s"}`,
+              };
+            },
+          },
+        },
+        {
+          type: "object",
+          name: "imageGallery",
+          title: "Image Gallery",
+          icon: () => "🖼️",
+          fields: [
+            defineField({
+              name: "heading",
+              title: "Heading (optional)",
+              type: "string",
+              description: 'e.g. "Behind the Scenes", "Stills"',
+            }),
+            defineField({
+              name: "images",
+              title: "Images",
+              type: "array",
+              of: [
+                {
+                  type: "image",
+                  name: "galleryImage",
+                  options: { hotspot: true },
+                  fields: [
+                    defineField({
+                      name: "alt",
+                      title: "Alt Text",
+                      type: "string",
+                      description: "Optional — falls back to project title + position",
+                    }),
+                    defineField({
+                      name: "caption",
+                      title: "Caption",
+                      type: "string",
+                    }),
+                  ],
+                },
+              ],
+              validation: (rule) => rule.required().min(1),
+            }),
+          ],
+          preview: {
+            select: { heading: "heading", images: "images" },
+            prepare({ heading, images }) {
+              const count = images?.length ?? 0;
+              return {
+                title: heading || "Image Gallery",
+                subtitle: `${count} image${count === 1 ? "" : "s"}`,
               };
             },
           },

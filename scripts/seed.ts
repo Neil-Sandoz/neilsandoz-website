@@ -192,6 +192,39 @@ I was given wide creative freedom to explore structure, tone, and visual flow, a
 async function seedProjects() {
   console.log("Seeding projects…");
   for (const p of projects) {
+    let sectionIndex = 0;
+
+    const sections: any[] = [
+      {
+        _type: "textSection",
+        _key: `sec${sectionIndex++}`,
+        content: textToPortableText(p.body),
+      },
+    ];
+
+    for (const v of p.videoLinks) {
+      sections.push({
+        _type: "videoEmbed",
+        _key: `sec${sectionIndex++}`,
+        label: v.label,
+        url: v.url,
+      });
+    }
+
+    if (p.pressLinks.length > 0) {
+      sections.push({
+        _type: "linkList",
+        _key: `sec${sectionIndex++}`,
+        heading: "Press",
+        links: p.pressLinks.map((l, i) => ({
+          _type: "linkItem",
+          _key: `li${i}`,
+          label: l.label,
+          url: l.url,
+        })),
+      });
+    }
+
     const doc = {
       _type: "project",
       _id: `project-${p.slug}`,
@@ -201,9 +234,7 @@ async function seedProjects() {
       location: p.location,
       role: p.role,
       shortDescription: p.shortDescription,
-      body: textToPortableText(p.body),
-      videoLinks: p.videoLinks.map((l, i) => ({ _type: "videoLink", _key: `vl${i}`, ...l })),
-      pressLinks: p.pressLinks.map((l, i) => ({ _type: "pressLink", _key: `pl${i}`, ...l })),
+      sections,
     };
     await client.createOrReplace(doc);
     console.log(`  ✓ ${p.order}. ${p.title}`);

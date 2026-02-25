@@ -29,19 +29,25 @@ const PROJECT_FULL_FIELDS = `
   shortDescription,
   heroImage { ..., asset-> },
   thumbnail { ..., asset-> },
-  body[]{
-    ...,
-    markDefs[]{
-      ...,
-      _type == "link" => { href }
+  sections[]{
+    _key,
+    _type,
+    _type == "textSection" => {
+      heading,
+      content[]{
+        ...,
+        markDefs[]{ ..., _type == "link" => { href } }
+      }
+    },
+    _type == "videoEmbed" => { label, url },
+    _type == "linkList" => {
+      heading,
+      links[]{ _key, label, url }
+    },
+    _type == "imageGallery" => {
+      heading,
+      images[]{ ..., asset-> }
     }
-  },
-  videoLinks[]{ _key, label, url },
-  pressLinks[]{ _key, label, url },
-  mediaGallery[]{
-    ...,
-    _type == "galleryImage" => { ..., asset-> },
-    _type == "galleryVideo" => { url, caption }
   }
 `;
 

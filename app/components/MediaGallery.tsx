@@ -2,24 +2,26 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { VideoEmbed } from "./VideoEmbed";
-import type { SanityGalleryImage, SanityGalleryVideo } from "@/lib/sanity/types";
 import { urlForImage } from "@/lib/sanity/image";
 
-type GalleryItem = SanityGalleryImage | SanityGalleryVideo;
+interface GalleryImageItem {
+  _key: string;
+  _type: "galleryImage";
+  asset: any;
+  hotspot?: any;
+  alt?: string;
+  caption?: string;
+}
 
 interface MediaGalleryProps {
-  items: GalleryItem[];
+  items: GalleryImageItem[];
+  heading?: string;
 }
 
-function isImageItem(item: GalleryItem): item is SanityGalleryImage {
-  return item._type === "galleryImage";
-}
-
-export function MediaGallery({ items }: MediaGalleryProps) {
+export function MediaGallery({ items, heading }: MediaGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const imageItems = items.filter(isImageItem);
+  const imageItems = items;
 
   const openLightbox = (index: number) => setLightboxIndex(index);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -51,62 +53,40 @@ export function MediaGallery({ items }: MediaGalleryProps) {
 
   if (!items.length) return null;
 
-  const videoItems = items.filter((i): i is SanityGalleryVideo => i._type === "galleryVideo");
-
   return (
-    <section className="mt-16">
-      <h2
-        className="mb-6 text-sm uppercase tracking-[0.28px] text-muted"
-        style={{ fontFamily: "var(--font-azeret), monospace" }}
-      >
-        Gallery
-      </h2>
-
-      {/* Photo grid */}
-      {imageItems.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-          {imageItems.map((item, i) => {
-            const src =
-              urlForImage(item)?.width(800).height(600).url() ?? "/ns-profile-photo.png";
-            return (
-              <button
-                key={item._key}
-                type="button"
-                onClick={() => openLightbox(i)}
-                className="group relative aspect-[4/3] w-full overflow-hidden bg-muted/20 focus-visible:outline-2 focus-visible:outline-foreground"
-                aria-label={`Open ${item.alt ?? "gallery image"} in lightbox`}
-              >
-                <Image
-                  src={src}
-                  alt={item.alt ?? ""}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                />
-              </button>
-            );
-          })}
-        </div>
+    <section>
+      {heading && (
+        <h2
+          className="mb-6 text-sm uppercase tracking-[0.28px] text-muted"
+          style={{ fontFamily: "var(--font-azeret), monospace" }}
+        >
+          {heading}
+        </h2>
       )}
 
-      {/* Video items */}
-      {videoItems.length > 0 && (
-        <div className="mt-8 flex flex-col gap-8">
-          {videoItems.map((item) => (
-            <div key={item._key}>
-              {item.caption && (
-                <p
-                  className="mb-3 text-sm uppercase tracking-[0.28px] text-muted"
-                  style={{ fontFamily: "var(--font-azeret), monospace" }}
-                >
-                  {item.caption}
-                </p>
-              )}
-              <VideoEmbed url={item.url} title={item.caption ?? "Video"} />
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        {imageItems.map((item, i) => {
+          const src =
+            urlForImage(item)?.width(800).height(600).url() ?? "/ns-profile-photo.png";
+          return (
+            <button
+              key={item._key}
+              type="button"
+              onClick={() => openLightbox(i)}
+              className="group relative aspect-[4/3] w-full overflow-hidden bg-muted/20 focus-visible:outline-2 focus-visible:outline-foreground"
+              aria-label={`Open ${item.alt ?? "gallery image"} in lightbox`}
+            >
+              <Image
+                src={src}
+                alt={item.alt ?? ""}
+                fill
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+            </button>
+          );
+        })}
+      </div>
 
       {/* Lightbox */}
       {lightboxIndex !== null && imageItems[lightboxIndex] && (
