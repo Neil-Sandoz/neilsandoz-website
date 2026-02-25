@@ -8,6 +8,8 @@ import { urlForImage } from "@/lib/sanity/image";
 import { ContactForm } from "../../components/ContactForm";
 import { JsonLd } from "../../components/JsonLd";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About Neil Sandoz — Film Editor, Director & Creative Partner",
   description:

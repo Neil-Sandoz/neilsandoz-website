@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
 import { HeroSection } from "../components/HeroSection";
 import { SelectedWork } from "../components/SelectedWork";
 import { getAllProjects, getSiteSettings } from "@/lib/sanity/queries";
