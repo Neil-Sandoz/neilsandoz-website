@@ -5,12 +5,16 @@ import { urlForImage } from "@/lib/sanity/image";
 
 interface ProjectCardProps {
   project: SanityProjectSummary;
+  /** Plain URL used in place of a Sanity thumbnail (static/fallback data). */
+  staticThumbnailUrl?: string;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
-  const thumbnailUrl = project.thumbnail
-    ? urlForImage(project.thumbnail)?.width(800).height(450).url() ?? "/ns-profile-photo.png"
-    : "/ns-profile-photo.png";
+export function ProjectCard({ project, staticThumbnailUrl }: ProjectCardProps) {
+  const thumbnailUrl =
+    staticThumbnailUrl ??
+    (project.thumbnail
+      ? urlForImage(project.thumbnail)?.width(800).height(450).url() ?? "/ns-profile-photo.png"
+      : "/ns-profile-photo.png");
 
   return (
     <Link

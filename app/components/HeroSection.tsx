@@ -5,6 +5,7 @@ import type { SanitySiteSettings } from "@/lib/sanity/types";
 import { urlForImage } from "@/lib/sanity/image";
 
 const FALLBACK_EDIT_REEL = "https://youtu.be/rRqMH-W_4YY";
+const FALLBACK_HERO_VIDEO = "https://youtu.be/LDzrmm2YoGg";
 
 interface HeroSectionProps {
   settings: SanitySiteSettings | null;
@@ -17,16 +18,11 @@ export function HeroSection({ settings }: HeroSectionProps) {
       ? urlForImage(settings.heroFallbackImage)?.width(1600).url() ?? "/ns-profile-photo.png"
       : "/ns-profile-photo.png";
 
-  const heroVideoUrl = settings?.heroVideoUrl ?? null;
-  // Only self-hosted MP4s work as looping backgrounds; YouTube URLs show poster only.
-  const isHostedVideo =
-    heroVideoUrl &&
-    !heroVideoUrl.includes("youtube") &&
-    !heroVideoUrl.includes("youtu.be");
+  const heroVideoUrl = settings?.heroVideoUrl ?? FALLBACK_HERO_VIDEO;
 
   return (
-    <section className="relative flex min-h-[100vh] items-end overflow-hidden bg-foreground pb-20 pt-[94px]">
-      {/* Background — static poster always present; video fades in over it */}
+    <section className="relative flex min-h-[85vh] items-end overflow-hidden bg-foreground pb-20 pt-[94px]">
+      {/* Background: static poster sits underneath; video (MP4 or YouTube) fades in over it */}
       <div className="absolute inset-0">
         <Image
           src={fallbackImageUrl}
@@ -36,12 +32,7 @@ export function HeroSection({ settings }: HeroSectionProps) {
           priority
           sizes="100vw"
         />
-        {isHostedVideo && (
-          <HeroVideo
-            src={heroVideoUrl!}
-            poster={fallbackImageUrl}
-          />
-        )}
+        <HeroVideo src={heroVideoUrl} poster={fallbackImageUrl} />
         <div className="absolute inset-0 bg-black/52" aria-hidden />
       </div>
 
@@ -51,13 +42,13 @@ export function HeroSection({ settings }: HeroSectionProps) {
           style={{ fontFamily: "var(--font-display)" }}
         >
           <span className="block animate-fade-up animate-delay-100">
-            I help people and brands
+            I help people
           </span>
           <span className="block animate-fade-up animate-delay-200">
-            tell meaningful stories
+            and brands tell
           </span>
           <span className="block animate-fade-up animate-delay-300">
-            through film
+            meaningful stories through film
           </span>
         </h1>
 

@@ -14,6 +14,7 @@ import { urlForImage } from "@/lib/sanity/image";
 import { VideoEmbed } from "@/app/components/VideoEmbed";
 import { MediaGallery } from "@/app/components/MediaGallery";
 import { JsonLd } from "@/app/components/JsonLd";
+import { CaseStudyKeyNav } from "@/app/components/CaseStudyKeyNav";
 import { PROJECTS } from "@/app/data/projects";
 
 interface PageProps {
@@ -183,6 +184,10 @@ export default async function WorkPage({ params }: PageProps) {
           />
         </div>
       </ScrollReveal>
+      <CaseStudyKeyNav
+        prevSlug={prev?.slug.current ?? null}
+        nextSlug={next?.slug.current ?? null}
+      />
       </>
     );
   }
@@ -196,6 +201,7 @@ export default async function WorkPage({ params }: PageProps) {
   const staticNext = currentIndex < PROJECTS.length - 1 ? PROJECTS[currentIndex + 1] : null;
 
   return (
+    <>
     <ScrollReveal className="pb-24 pt-[94px]">
       <div className="reveal relative aspect-video w-full overflow-hidden bg-muted/30">
         <Image
@@ -248,6 +254,11 @@ export default async function WorkPage({ params }: PageProps) {
         />
       </div>
     </ScrollReveal>
+    <CaseStudyKeyNav
+      prevSlug={staticPrev?.slug ?? null}
+      nextSlug={staticNext?.slug ?? null}
+    />
+    </>
   );
 }
 
