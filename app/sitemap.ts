@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
-import { getAllProjectSlugs } from "@/lib/sanity/queries";
 import { PROJECTS } from "@/app/data/projects";
 
 const SITE_URL = "https://neilsandoz.com";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Static pages
+export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
@@ -21,15 +19,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic project pages — try Sanity, fall back to static
-  let slugs: string[] = [];
-  try {
-    slugs = await getAllProjectSlugs();
-  } catch {}
-  if (!slugs.length) slugs = PROJECTS.map((p) => p.slug);
-
-  const projectPages: MetadataRoute.Sitemap = slugs.map((slug) => ({
-    url: `${SITE_URL}/work/${slug}`,
+  const projectPages: MetadataRoute.Sitemap = PROJECTS.map((p) => ({
+    url: `${SITE_URL}/work/${p.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.7,
