@@ -48,8 +48,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: DEFAULT_OG_IMAGE,
-        width: 1200,
-        height: 630,
+        width: 1440,
+        height: 810,
         alt: "Neil Sandoz — Film Editor",
       },
     ],
@@ -62,7 +62,10 @@ export const metadata: Metadata = {
     images: [DEFAULT_OG_IMAGE],
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.png", type: "image/png", sizes: "any" },
+    ],
     apple: "/apple-touch-icon.png",
   },
   robots: {
