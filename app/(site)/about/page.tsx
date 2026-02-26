@@ -247,7 +247,8 @@ export default async function AboutPage() {
                 <em>
                   <strong>connection</strong>
                 </em>{" "}
-                is the thread that runs through every good story.
+                is the thread that runs through every{" "}
+                <span className="whitespace-nowrap">good story.</span>
               </p>
               <p className="mt-6 text-xl">
                 If you&rsquo;re looking to connect your story to an audience in a{" "}
