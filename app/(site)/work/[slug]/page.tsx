@@ -134,7 +134,7 @@ export default async function WorkPage({ params }: PageProps) {
       <>
       <JsonLd schema={schemas} />
       <ScrollReveal className="pb-24 pt-[94px]">
-        <div className="reveal relative h-[50vh] w-full overflow-hidden bg-muted/30">
+        <div className="reveal relative h-[60vh] w-full overflow-hidden bg-muted/30">
           <Image
             src={heroImageUrl}
             alt={sanityProject.heroImage?.alt ?? sanityProject.thumbnail?.alt ?? sanityProject.title}
@@ -183,7 +183,7 @@ export default async function WorkPage({ params }: PageProps) {
   return (
     <>
     <ScrollReveal className="pb-24 pt-[94px]">
-      <div className="reveal relative h-[65vh] w-full overflow-hidden bg-muted/30">
+      <div className="reveal relative h-[60vh] w-full overflow-hidden bg-muted/30">
         <Image
           src={staticProject.thumbnail ?? "/ns-profile-photo.png"}
           alt={staticProject.title}
