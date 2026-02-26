@@ -79,7 +79,7 @@ export async function getAllProjectSlugs(): Promise<string[]> {
 export async function getAdjacentProjects(
   currentOrder: number
 ): Promise<{ prev: SanityProjectSummary | null; next: SanityProjectSummary | null }> {
-  const [prev, next] = await Promise.all([
+  const [prev, next, first, last] = await Promise.all([
     client.fetch<SanityProjectSummary | null>(
       `*[_type == "project" && order < $order] | order(order desc)[0] { ${PROJECT_SUMMARY_FIELDS} }`,
       { order: currentOrder },
@@ -90,8 +90,18 @@ export async function getAdjacentProjects(
       { order: currentOrder },
       { next: { tags: ["project"] } }
     ),
+    client.fetch<SanityProjectSummary | null>(
+      `*[_type == "project"] | order(order asc)[0] { ${PROJECT_SUMMARY_FIELDS} }`,
+      {},
+      { next: { tags: ["project"] } }
+    ),
+    client.fetch<SanityProjectSummary | null>(
+      `*[_type == "project"] | order(order desc)[0] { ${PROJECT_SUMMARY_FIELDS} }`,
+      {},
+      { next: { tags: ["project"] } }
+    ),
   ]);
-  return { prev: prev ?? null, next: next ?? null };
+  return { prev: prev ?? last, next: next ?? first };
 }
 
 export async function getSiteSettings(): Promise<SanitySiteSettings | null> {

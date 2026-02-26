@@ -177,13 +177,13 @@ export default async function WorkPage({ params }: PageProps) {
   if (!staticProject) notFound();
 
   const currentIndex = PROJECTS.findIndex((p) => p.slug === slug);
-  const staticPrev = currentIndex > 0 ? PROJECTS[currentIndex - 1] : null;
-  const staticNext = currentIndex < PROJECTS.length - 1 ? PROJECTS[currentIndex + 1] : null;
+  const staticPrev = PROJECTS[(currentIndex - 1 + PROJECTS.length) % PROJECTS.length];
+  const staticNext = PROJECTS[(currentIndex + 1) % PROJECTS.length];
 
   return (
     <>
     <ScrollReveal className="pb-24 pt-[94px]">
-      <div className="reveal relative h-[50vh] w-full overflow-hidden bg-muted/30">
+      <div className="reveal relative h-[60vh] w-full overflow-hidden bg-muted/30">
         <Image
           src={staticProject.thumbnail ?? "/ns-profile-photo.png"}
           alt={staticProject.title}
