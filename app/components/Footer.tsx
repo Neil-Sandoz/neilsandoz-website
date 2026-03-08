@@ -1,16 +1,21 @@
-import Image from "next/image";
-
 export function Footer() {
   return (
-    <footer className="bg-background px-6 pb-4 pt-24 md:px-[50px]">
-      <div className="mb-3 flex justify-center overflow-hidden">
-        <Image
-          src="/Neil-Sandoz.svg"
-          alt="Neil Sandoz"
-          width={1415}
-          height={208}
-          className="h-auto w-full"
-        />
+    <footer className="bg-background px-6 pb-4 pt-12 md:px-[50px] md:pt-24">
+      {/* Belief statement (replaces wordmark) */}
+      <div className="mb-12 flex justify-center md:mb-20">
+        <blockquote className="mx-auto max-w-[1100px] text-center">
+          <p
+            className="text-[28px] leading-[1.2] tracking-[-1.626px] sm:text-[36px] md:text-[48px] lg:text-[64px]"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            I believe{" "}
+            <em>
+              <strong>connection</strong>
+            </em>{" "}
+            is the thread that runs through every{" "}
+            <span className="whitespace-nowrap">good story.</span>
+          </p>
+        </blockquote>
       </div>
       <div
         className="flex flex-col items-center gap-4 py-3 text-sm uppercase tracking-[0.35px] md:flex-row md:items-end md:justify-between"
