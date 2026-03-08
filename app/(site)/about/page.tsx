@@ -228,34 +228,15 @@ export default async function AboutPage() {
                       . I also really like basketball, making things with my hands,
                       and being outside.
                     </p>
+                    <p>
+                      If you&rsquo;re looking to connect your story to an audience in
+                      a meaningful way, I&rsquo;d love to create something with you.
+                    </p>
                   </>
                 )}
               </div>
             </div>
           </div>
-        </ScrollReveal>
-
-        {/* Pull quote */}
-        <ScrollReveal>
-          <section className="reveal border-t border-border py-20">
-            <blockquote className="mx-auto max-w-[848px] text-center">
-              <p
-                className="text-[36px] leading-[1.2] tracking-[-1.626px] sm:text-[48px] md:text-[56px]"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                I believe{" "}
-                <em>
-                  <strong>connection</strong>
-                </em>{" "}
-                is the thread that runs through every{" "}
-                <span className="whitespace-nowrap">good story.</span>
-              </p>
-              <p className="mt-6 text-xl">
-                If you&rsquo;re looking to connect your story to an audience in a{" "}
-                <em>meaningful</em> way, I&rsquo;d love to create something with you.
-              </p>
-            </blockquote>
-          </section>
         </ScrollReveal>
       </div>
     </>
